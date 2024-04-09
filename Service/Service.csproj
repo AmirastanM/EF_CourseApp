@@ -23,4 +23,12 @@
     <ProjectReference Include="..\Repository\Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enams\" />
+    <Folder Include="Exceptions\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Helpers\Constants\" />
+    <Folder Include="Interface\" />
+  </ItemGroup>
+
 </Project>
