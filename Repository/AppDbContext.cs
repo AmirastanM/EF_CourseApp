@@ -11,7 +11,7 @@ using Group = Domain.Models.Group;
 
 namespace Repository
 {
-    internal class AppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
 
         public DbSet<Education> Educations { get; set; }
