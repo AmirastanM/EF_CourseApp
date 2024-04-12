@@ -34,7 +34,7 @@ namespace Service.Services
             }
             catch (ArgumentNullException ex)
             {
-                Console.WriteLine("Error: data can't be null 'education'.");
+                Console.WriteLine("Error: data can't be null");
             }
             catch (Exception ex)
             {
@@ -51,11 +51,11 @@ namespace Service.Services
                 {
                     _context.Remove(data);
                     await _context.SaveChangesAsync();
-                    Console.WriteLine("Successfully deleted: " + id);
+                    Console.WriteLine("Successfully deleted");
                 }
                 else
                 {
-                    Console.WriteLine("Id not found: " + id);
+                    Console.WriteLine("Id not found");
                 }
             }
             catch (Exception ex)

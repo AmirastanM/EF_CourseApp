@@ -1,3 +1,8 @@
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.csproj.AssemblyReference.cache
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.AssemblyInfoInputs.cache
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.AssemblyInfo.cs
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.csproj.CoreCompileInputs.cache
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\EF_CourseApp.exe
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\EF_CourseApp.deps.json
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\EF_CourseApp.runtimeconfig.json
@@ -26,6 +31,9 @@ C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Micr
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\SendGrid.dll
+C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\StarkbankEcdsa.dll
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\System.Configuration.ConfigurationManager.dll
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\System.Diagnostics.DiagnosticSource.dll
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\System.Drawing.Common.dll
@@ -52,11 +60,6 @@ C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Serv
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Service.pdb
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Domain.pdb
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\bin\Debug\net6.0\Repository.pdb
-C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.csproj.AssemblyReference.cache
-C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.AssemblyInfoInputs.cache
-C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.AssemblyInfo.cs
-C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.csproj.CoreCompileInputs.cache
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.csproj.CopyComplete
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\EF_CourseApp.dll
 C:\Users\Amirastan\Desktop\it c#\EF_CourseApp\EF_CourseApp\obj\Debug\net6.0\refint\EF_CourseApp.dll
