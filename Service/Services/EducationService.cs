@@ -79,6 +79,12 @@ namespace Service.Services
 
         public Task<List<Education>> GetAllWhithExpression(Func<Education, bool> predicate)
         {
+            var educations = _context.Educations.Where(predicate).ToList();
+
+            if (educations == null)
+            {
+                throw new Exception("No educations found.");
+            }
             return Task.FromResult(_context.Educations.Where(predicate).ToList());
         }
 
@@ -108,5 +114,9 @@ namespace Service.Services
                
             }
         }
+
+              
+
+       
     }
 }

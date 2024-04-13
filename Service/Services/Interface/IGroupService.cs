@@ -11,7 +11,6 @@ namespace Service.Services.Interface
     {
         Task<List<Group>> GetAllAsync();
         Task<Group> GetByIdAsync(int id);
-        Task<Group> getAllByEducationId(int educationId);
         Task CreateAsync(Group group);
         Task UpdateAsync(Group group);
         Task DeleteAsync(int id);

@@ -16,11 +16,14 @@ namespace EF_CourseApp.Controllers
     internal class EducationController
     {
         private readonly EducationService _educationService;
+        private readonly GroupService _groupService;
+       
 
 
         public EducationController()
         {
             _educationService = new EducationService();
+            _groupService = new GroupService();
         }
 
         public async Task CreateAsync()
@@ -191,6 +194,81 @@ namespace EF_CourseApp.Controllers
                 }
             }
         }
+
+        public async Task SearchByEducation()
+        {
+            Console.WriteLine("Please enter the education name:");
+
+            while (true)
+            {
+                string textStr = Console.ReadLine();
+
+                if (string.IsNullOrWhiteSpace(textStr))
+                {
+                    Console.WriteLine("Input cannot be empty. Please try again.");
+                    continue;
+                }
+
+                try
+                {
+                    var result = await _educationService.GetAllWhithExpression(m => m.Name.ToLower().Trim().Contains(textStr.ToLower().Trim()));
+
+                    if (result.Count == 0)
+                    {
+                        Console.WriteLine("Education not found. Please try again.");
+                        continue;
+                    }
+
+                    foreach (var item in result)
+                    {
+                        string data = $"Education name: {item.Name}, Education color: {item.Color}";
+                        Console.WriteLine(data);
+                    }
+
+                    break; // Выход из цикла, если найдены образования
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred: {ex.Message}. Please try again.");
+                }
+            }
+        }
+
+        public async Task<List<Group>> GetAllWhithGroupsAsync()
+        {
+            Console.WriteLine("Please write group name:");
+        GName: string groupName = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(groupName))
+            {
+                Console.WriteLine("Group name cannot be empty.");
+                goto GName;
+            }
+
+            try
+            {
+                Func<Group, bool> predicate = g => g.Name.Equals(groupName.Trim(), StringComparison.OrdinalIgnoreCase);
+
+                var result = await _groupService.GetAllWhithExpression(predicate);
+
+                if (result.Count == 0)
+                {
+                    Console.WriteLine("Group not found.");
+                    return new List<Group>();
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                return new List<Group>();
+            }
+        }
+
+
+
+
+
 
 
 
