@@ -14,6 +14,11 @@ namespace Service.Services.Interface
         Task CreateAsync(Group group);
         Task UpdateAsync(Group group);
         Task DeleteAsync(int id);
-        Task<List<Group>> GetAllWhithExpression(Func<Group, bool> predicate);
+        Task<List<Group>> SearchAsync(string txt);
+        Task<List<Group>> GetAllWithEducationIdAsync(int EducationId);
+        Task<List<Group>> FilterByEducationNameAsync();
+        Task<List<Group>> SortWithCapacityAsync();
     }
 }
+
+ 

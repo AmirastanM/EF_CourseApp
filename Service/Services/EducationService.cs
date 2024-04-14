@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Service.Services.Interface;
 using Repository;
+using Domain.Common;
 
 namespace Service.Services
 {
@@ -19,27 +20,29 @@ namespace Service.Services
             _context = new AppDbContext();
         }
 
-
         public async Task CreateAsync(Education education)
         {
-            try
-            {
-                if (education == null)
-                {
-                    throw new ArgumentNullException();
-                }
+            
 
+            try
+                {
+                    if (education == null)
+                    {
+                        throw new ArgumentNullException();
+                    }                
                 await _context.Educations.AddAsync(education);
-                await _context.SaveChangesAsync();
-            }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine("Error: data can't be null");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+                    await _context.SaveChangesAsync();
+                }
+                catch (ArgumentNullException ex)
+                {
+                    Console.WriteLine("Error: data can't be null");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            
+
         }
 
         public async Task DeleteAsync(int id)
@@ -73,19 +76,21 @@ namespace Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return null; 
+                return null;
             }
         }
 
-        public Task<List<Education>> GetAllWhithExpression(Func<Education, bool> predicate)
+        public async Task<List<Education>> GetAllWithGroupsAsync()
         {
-            var educations = _context.Educations.Where(predicate).ToList();
-
-            if (educations == null)
+            try
             {
-                throw new Exception("No educations found.");
+                return await _context.Educations.Include(g => g.Groups).ToListAsync();
             }
-            return Task.FromResult(_context.Educations.Where(predicate).ToList());
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);               
+                return new List<Education>();
+            }
         }
 
         public async Task<Education> GetByIdAsync(int id)
@@ -101,6 +106,24 @@ namespace Service.Services
             }
         }
 
+        public async Task<List<Education>> SearchAsync(string txt)
+        {
+            try
+            {
+                return await _context.Educations.Where(e => e.Name.Contains(txt)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);                
+                return new List<Education>();
+            }
+        }
+
+        //public async Task<List<Education>> SortWhithCreateDateAsync(string text)
+        //{
+        //    return await _context.Educations.SortWhithCreateDateAsync(text);
+        //}
+
         public async Task UpdateAsync(Education education)
         {
             try
@@ -111,12 +134,8 @@ namespace Service.Services
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-               
+
             }
         }
-
-              
-
-       
     }
 }

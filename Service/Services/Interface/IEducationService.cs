@@ -16,6 +16,11 @@ namespace Service.Services.Interface
         Task CreateAsync(Education education);
         Task UpdateAsync(Education education);
         Task DeleteAsync(int id);
-        Task<List<Education>> GetAllWhithExpression(Func<Education, bool> predicate);
+        Task<List<Education>> SearchAsync(string txt);
+        Task<List<Education>> GetAllWithGroupsAsync();
+        //Task<List<Education>> SortWhithCreateDateAsync(string text);
+
     }
 }
+
+

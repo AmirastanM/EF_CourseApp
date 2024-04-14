@@ -1,35 +1,29 @@
-﻿using Service.Services;
+﻿using Domain.Models;
+using Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Channels;
-using System.Threading.Tasks;
-using Domain.Models;
-using Microsoft.EntityFrameworkCore;
-using SendGrid.Helpers.Errors.Model;
-using SendGrid.Helpers.Mail;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EF_CourseApp.Controllers
 {
-    internal class EducationController
+    internal class GroupController
     {
-        private readonly EducationService _educationService;
+        private readonly GroupService _groupService;
 
-
-
-
-        public EducationController()
+        public GroupController()
         {
-            _educationService = new EducationService();
+            _groupService = new GroupService();
         }
+
 
         public async Task CreateAsync()
         {
             try
             {
-                Console.WriteLine("Add education name:");
+                Console.WriteLine("Add group name:");
             Name: string name = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(name))
@@ -38,18 +32,39 @@ namespace EF_CourseApp.Controllers
                     goto Name;
                 }
 
-                Console.WriteLine("Add education color:");
-            Color: string color = Console.ReadLine();
+                Console.WriteLine("Add group capacity:");
+            Capacity: string gCapacity = Console.ReadLine();
+                int capacity;
 
-                if (string.IsNullOrWhiteSpace(color))
+                if (string.IsNullOrWhiteSpace(gCapacity) || !int.TryParse(gCapacity, out capacity))
                 {
-                    Console.WriteLine("Color can't be empty. Please try again.");
-                    goto Color;
+                    Console.WriteLine("Capacity can't be empty or string. Please try again.");
+                    goto Capacity;
                 }
+
+                Console.WriteLine("Add Education Id:");
+            eId: string eduId = Console.ReadLine();
+                int eId;
+
+                if (string.IsNullOrWhiteSpace(eduId))
+                {
+                    Console.WriteLine("Capacity can't be empty or string. Please try again.");
+                    goto eId;
+                }
+                if (!int.TryParse(eduId, out eId))
+                {
+                    Console.WriteLine("Invalid education ID. Please try again.");
+                    goto eId;
+                }
+                else
+                {
+                    int educationId = eId;
+                }
+
 
                 DateTime time = DateTime.Now;
 
-                await _educationService.CreateAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), Date = time });
+                await _groupService.CreateAsync(new Group { Name = name.Trim().ToLower(), Capacity = capacity, EducationId = eId, Date = time });
 
                 Console.WriteLine("Education successfully added.");
             }
@@ -68,7 +83,7 @@ namespace EF_CourseApp.Controllers
             {
                 try
                 {
-                    Console.WriteLine("Please write education ID:");
+                    Console.WriteLine("Please write Group ID:");
 
                 uId: string idStr = Console.ReadLine();
 
@@ -85,25 +100,40 @@ namespace EF_CourseApp.Controllers
                     }
 
                     DateTime time = DateTime.Now;
-                    var existingEducation = await _educationService.GetByIdAsync(id);
-                    if (existingEducation == null)
+                    var existingGroup = await _groupService.GetByIdAsync(id);
+                    if (existingGroup == null)
                     {
                         Console.WriteLine("Education not found.");
                         goto uId;
                     }
 
-
-                    Console.WriteLine("Please write new education name:");
+                    Console.WriteLine("Please write new group name:");
                     string name = Console.ReadLine();
-                    existingEducation.Name = name;
+                    existingGroup.Name = name;
 
-                    Console.WriteLine("Please write new education color:");
-                    string color = Console.ReadLine();
-                    existingEducation.Color = color;
+                    Console.WriteLine("Please write new group capacity:");
+                    rCapacity: string capacityStr = Console.ReadLine();
+                    int capacity;
+                    if (!int.TryParse(capacityStr, out capacity))
+                    {
+                        Console.WriteLine("Capacity can't be string. Please try again.");
+                        goto rCapacity;
+                    }
+                    existingGroup.Capacity = capacity;
 
-                    await _educationService.UpdateAsync(existingEducation);
+                    await _groupService.UpdateAsync(existingGroup);
                     Console.WriteLine("Education successfully updated.");
                     isInputValid = true;
+
+                    Console.WriteLine("Please write new education id:");
+                eID: string eIdStr = Console.ReadLine();
+                    int eduId;
+                    if (!int.TryParse(eIdStr, out eduId))
+                    {
+                        Console.WriteLine("Education Id can't be string. Please try again.");
+                        goto eID;
+                    }
+                    existingGroup.EducationId = eduId;
                 }
                 catch (Exception ex)
                 {
@@ -114,7 +144,7 @@ namespace EF_CourseApp.Controllers
 
         public async Task DeleteAsync()
         {
-            Console.WriteLine("Please write the Education id: ");
+            Console.WriteLine("Please add the Group id: ");
         Id: string idStr = Console.ReadLine();
             int id;
             bool isCorrectIdFormat = int.TryParse(idStr, out id);
@@ -130,7 +160,7 @@ namespace EF_CourseApp.Controllers
                 try
                 {
                     DateTime time = DateTime.Now;
-                    await _educationService.DeleteAsync(id);
+                    await _groupService.DeleteAsync(id);
 
 
                 }
@@ -150,21 +180,21 @@ namespace EF_CourseApp.Controllers
 
         public async Task GetAllAsync()
         {
-            var datas = await _educationService.GetAllAsync();
+            var datas = await _groupService.GetAllAsync();
             if (datas != null || !datas.Any())
             {
                 await Console.Out.WriteLineAsync("Data not found");
             }
             foreach (var item in datas)
             {
-                string data = $"Education Name: {item.Name}, Education Color: {item.Color}, Created day: {item.Date}";
+                string data = $"Group Name: {item.Name}, Group Capacity: {item.Capacity}, Education Id: {item.EducationId}";
                 await Console.Out.WriteLineAsync(data);
             }
         }
 
         public async Task GetByIdAsync()
         {
-            Console.WriteLine("Enter the Education ID: ");
+            Console.WriteLine("Enter the Group ID: ");
         gId: string idStr = Console.ReadLine();
 
             if (string.IsNullOrEmpty(idStr))
@@ -181,7 +211,7 @@ namespace EF_CourseApp.Controllers
 
             try
             {
-                var data = await _educationService.GetByIdAsync(id);
+                var data = await _groupService.GetByIdAsync(id);
 
                 if (data == null)
                 {
@@ -189,7 +219,7 @@ namespace EF_CourseApp.Controllers
                     return;
                 }
 
-                string result = $"Education Name: {data.Name}, Education Color: {data.Color}";
+                string result = $"Group Name: {data.Name}, Group Capacity: {data.Capacity}, Education Id: {data.EducationId}";
                 Console.WriteLine(result);
             }
             catch (Exception ex)
@@ -197,10 +227,10 @@ namespace EF_CourseApp.Controllers
                 Console.WriteLine(ex.Message);
             }
         }
-        
+
         public async Task SearchAsync()
         {
-            Console.WriteLine("Please enter the education name:");
+            Console.WriteLine("Please enter the group name:");
 
             while (true)
             {
@@ -214,7 +244,7 @@ namespace EF_CourseApp.Controllers
 
                 try
                 {
-                    var result = await _educationService.SearchAsync(textStr);
+                    var result = await _groupService.SearchAsync(textStr);
 
                     if (result.Count == 0)
                     {
@@ -224,7 +254,7 @@ namespace EF_CourseApp.Controllers
 
                     foreach (var item in result)
                     {
-                        string data = $"Education name: {item.Name}, Education color: {item.Color}";
+                        string data = $"Group name: {item.Name}, Group capacity: {item.Capacity}, Education Id: {item.EducationId}";
                         Console.WriteLine(data);
                     }
 
@@ -236,20 +266,61 @@ namespace EF_CourseApp.Controllers
                 }
             }
         }
-        public async Task GetAllWithGroupsAsync()
+
+        public async Task FilterByEducationNameAsync()
         {
-            var datas = await _educationService.GetAllAsync();
+
+            var datas = await _groupService.GetAllAsync();
             if (datas != null || !datas.Any())
             {
                 await Console.Out.WriteLineAsync("Data not found");
             }
             foreach (var item in datas)
             {
-                string data = $"Education Name: {item.Name}, Education Color: {item.Color}, Group name: {string.Join(", ", item.Groups)}";
+                string data = $"Group Name: {item.Name}, Group capacity: {item.Capacity}, Education name: {string.Join(", ", item.Education)}";
                 await Console.Out.WriteLineAsync(data);
             }
         }
-    }
-}
+               
+        public async Task GetAllWithEducationIdAsync(int EducationId)
+        {
+            Console.WriteLine("Enter the Education ID: ");
+        gId: string idStr = Console.ReadLine();
 
-       
+            if (string.IsNullOrEmpty(idStr))
+            {
+                Console.WriteLine("ID can't be empty. Please try again.");
+                goto gId;
+            }
+
+            if (!int.TryParse(idStr, out int educationId))
+            {
+                Console.WriteLine("Format is wrong. Please enter integer format.");
+                goto gId;
+            }
+
+            try
+            {
+                var data = await _groupService.GetAllWithEducationIdAsync(educationId);
+
+                if (data == null || data.Count == 0)
+                {
+                    Console.WriteLine("No groups found for this ID.");
+                    return;
+                }
+
+                foreach (var group in data)
+                {
+                    string result = $"Group Name: {group.Name}, Group Capacity: {group.Capacity}, Education Id: {group.EducationId}";
+                    Console.WriteLine(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine( ex.Message);
+            }
+        }
+    }
+
+    }
+
