@@ -10,6 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using SendGrid.Helpers.Errors.Model;
 using SendGrid.Helpers.Mail;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using Service.Extensions;
+using System.Xml.Linq;
 
 namespace EF_CourseApp.Controllers
 {
@@ -38,12 +41,48 @@ namespace EF_CourseApp.Controllers
                     goto Name;
                 }
 
+                var result = await _educationService.GetAllAsync();
+
+                bool educationExists = false;
+                foreach (var item in result)
+                {
+                    if (item.Name == name)
+                    {
+                        educationExists = true;
+                        break;
+                    }
+                }
+
+                if (educationExists)
+                {
+                    ConsoleColor.Red.WriteConsole("This education name exists. Please add a new name.");
+                    goto Name;
+                }
+
+                if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
+                {
+                    ConsoleColor.Red.WriteConsole("Format is wrong, Please add again");
+                    goto Name;
+                }
+
+                if (name.Length < 3)
+                {
+                    ConsoleColor.Red.WriteConsole(" Name of education must not be less than 3 letters ");
+                    goto Name;
+                }
+
+
                 Console.WriteLine("Add education color:");
             Color: string color = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(color))
                 {
                     Console.WriteLine("Color can't be empty. Please try again.");
+                    goto Color;
+                }
+                if (!Regex.IsMatch(color, @"^[\p{L}\p{M}' \.\-]+$"))
+                {
+                    ConsoleColor.Red.WriteConsole("Format is wrong, Please add again");
                     goto Color;
                 }
 
@@ -54,13 +93,13 @@ namespace EF_CourseApp.Controllers
                 Console.WriteLine("Education successfully added.");
             }
             catch (Exception ex)
-            {
+            {                
                 Console.WriteLine(ex.Message);
             }
+        
+    }
 
-        }
-
-        public async Task Update()
+        public async Task UpdateAsync()
         {
             bool isInputValid = false;
 
@@ -94,11 +133,21 @@ namespace EF_CourseApp.Controllers
 
 
                     Console.WriteLine("Please write new education name:");
-                    string name = Console.ReadLine();
+                    checkName: string name = Console.ReadLine();
+                    if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
+                    {
+                        Console.WriteLine("Not correct input, please try again");
+                        goto checkName;
+                    }
                     existingEducation.Name = name;
 
                     Console.WriteLine("Please write new education color:");
                     string color = Console.ReadLine();
+                    if (!Regex.IsMatch(color, @"^[\p{L}\p{M}' \.\-]+$"))
+                    {
+                        Console.WriteLine("Not correct input, please try again");
+                        goto checkName;
+                    }
                     existingEducation.Color = color;
 
                     await _educationService.UpdateAsync(existingEducation);
@@ -189,7 +238,7 @@ namespace EF_CourseApp.Controllers
                     return;
                 }
 
-                string result = $"Education Name: {data.Name}, Education Color: {data.Color}";
+                string result = $"Education Name: {data.Name}, Education Color: {data.Color}, CreateDate: {data.Date}";
                 Console.WriteLine(result);
             }
             catch (Exception ex)
@@ -206,10 +255,15 @@ namespace EF_CourseApp.Controllers
             {
                 string textStr = Console.ReadLine();
 
-                if (string.IsNullOrWhiteSpace(textStr))
+                Text: if (string.IsNullOrWhiteSpace(textStr))
                 {
                     Console.WriteLine("Input can't be empty. Please try again.");
-                    continue;
+                    goto Text;
+                }
+                if (!Regex.IsMatch(textStr, @"^[\p{L}\p{M}' \.\-]+$"))
+                {
+                    ConsoleColor.Red.WriteConsole("Format is wrong");
+                    goto Text;
                 }
 
                 try
@@ -219,12 +273,12 @@ namespace EF_CourseApp.Controllers
                     if (result.Count == 0)
                     {
                         Console.WriteLine("Data not found. Please try again.");
-                        continue;
+                        goto Text;
                     }
 
                     foreach (var item in result)
                     {
-                        string data = $"Education name: {item.Name}, Education color: {item.Color}";
+                        string data = $"Education name: {item.Name}, Education color: {item.Color}, CreateDate: {item.Date}";
                         Console.WriteLine(data);
                     }
 

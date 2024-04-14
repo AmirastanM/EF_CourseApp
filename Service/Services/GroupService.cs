@@ -122,9 +122,18 @@ namespace Service.Services
             }
         }
 
-        public Task<List<Group>> SortWithCapacityAsync()
+        public async Task<List<Group>> SortWithCapacityAsync(string sort)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var groups = await _context.Groups.OrderBy(g => g.Capacity).ToListAsync();
+                return groups;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine( ex.Message);
+                return new List<Group>();
+            }
         }
 
         public async Task UpdateAsync(Group group)

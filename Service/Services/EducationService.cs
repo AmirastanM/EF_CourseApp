@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Service.Services.Interface;
 using Repository;
 using Domain.Common;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Service.Services
 {
@@ -21,9 +22,7 @@ namespace Service.Services
         }
 
         public async Task CreateAsync(Education education)
-        {
-            
-
+        {            
             try
                 {
                     if (education == null)
@@ -40,8 +39,7 @@ namespace Service.Services
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                }
-            
+                }          
 
         }
 
@@ -119,10 +117,18 @@ namespace Service.Services
             }
         }
 
-        //public async Task<List<Education>> SortWhithCreateDateAsync(string text)
-        //{
-        //    return await _context.Educations.SortWhithCreateDateAsync(text);
-        //}
+        public async Task<List<Education>> SortWhithCreateDateAsync(string sortType)
+        {            
+            try
+            {
+                return await _context.Educations.OrderBy(m => m.Date).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Education>();
+            }
+        }        
 
         public async Task UpdateAsync(Education education)
         {

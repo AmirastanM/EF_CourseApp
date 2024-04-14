@@ -1,11 +1,15 @@
 ﻿using Domain.Models;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Service.Extensions;
 using Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Group = Domain.Models.Group;
 
 namespace EF_CourseApp.Controllers
 {
@@ -24,13 +28,36 @@ namespace EF_CourseApp.Controllers
             try
             {
                 Console.WriteLine("Add group name:");
-            Name: string name = Console.ReadLine();
+            GroupName: string name = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(name))
                 {
                     Console.WriteLine("Name can't be empty. Please try again.");
-                    goto Name;
+                    goto GroupName;
                 }
+
+                var result = await _groupService.GetAllAsync();
+
+                bool educationExists = false;
+                foreach (var item in result)
+                {
+                    if (item.Name == name)
+                    {
+                        educationExists = true;
+                        break;
+                    }
+                }
+                if (name.Length < 3)
+                {
+                    ConsoleColor.Red.WriteConsole("Group name can't be less than three letters ");
+                    goto GroupName;
+                }
+                if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
+                {
+                    ConsoleColor.Red.WriteConsole("Format is wrong");
+                    goto GroupName;
+                }
+
 
                 Console.WriteLine("Add group capacity:");
             Capacity: string gCapacity = Console.ReadLine();
@@ -75,7 +102,7 @@ namespace EF_CourseApp.Controllers
 
         }
 
-        public async Task Update()
+        public async Task UpdateAsync()
         {
             bool isInputValid = false;
 
@@ -108,7 +135,12 @@ namespace EF_CourseApp.Controllers
                     }
 
                     Console.WriteLine("Please write new group name:");
-                    string name = Console.ReadLine();
+                    checkName: string name = Console.ReadLine();
+                    if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
+                    {
+                        Console.WriteLine("Not correct input, please try again");
+                        goto checkName;
+                    }
                     existingGroup.Name = name;
 
                     Console.WriteLine("Please write new group capacity:");
@@ -130,7 +162,7 @@ namespace EF_CourseApp.Controllers
                     int eduId;
                     if (!int.TryParse(eIdStr, out eduId))
                     {
-                        Console.WriteLine("Education Id can't be string. Please try again.");
+                        Console.WriteLine("Education Id can't be letter. Please try again.");
                         goto eID;
                     }
                     existingGroup.EducationId = eduId;
@@ -282,7 +314,7 @@ namespace EF_CourseApp.Controllers
             }
         }
                
-        public async Task GetAllWithEducationIdAsync(int EducationId)
+        public async Task GetAllWithEducationIdAsync()
         {
             Console.WriteLine("Enter the Education ID: ");
         gId: string idStr = Console.ReadLine();
@@ -320,7 +352,41 @@ namespace EF_CourseApp.Controllers
                 Console.WriteLine( ex.Message);
             }
         }
+
+        public async Task<List<Group>> SortWithCapacityAsync()
+        {
+            try
+            {
+                string sortType;
+                do
+                {
+                    Console.WriteLine("Choose sort type: Asc or Desc");
+                    sortType = Console.ReadLine();
+
+                    if (sortType.ToLower() != "asc" && sortType.ToLower() != "desc")
+                    {
+                        Console.WriteLine("Invalid sort type. Please choose one type 'Asc' or 'Desc'.");
+                    }
+                }
+                while (sortType.ToLower() != "asc" && sortType.ToLower() != "desc");
+
+                var groups = await _groupService.SortWithCapacityAsync(sortType);
+
+                foreach (var group in groups)
+                {
+                    Console.WriteLine($"Name: {group.Name}, Capacity: {group.Capacity}");
+                }
+
+                return groups;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<Group>();
+            }
+        }
+    }
     }
 
-    }
+    
 
