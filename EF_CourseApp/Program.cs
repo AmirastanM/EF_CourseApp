@@ -1,14 +1,18 @@
 ﻿using Domain.Models;
 using EF_CourseApp.Controllers;
 using Service.Enams;
+using Service.Extensions;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
+using System.Reflection.Emit;
 
 EducationController educationController = new EducationController();
 GroupController groupController = new GroupController();
 
+
 while (true)
 {
-    GetMenues();
+GetMenues();
 
 Operation: string operationStr = Console.ReadLine();
 
@@ -21,69 +25,67 @@ Operation: string operationStr = Console.ReadLine();
         switch (operation)
         {
             case (int)OperationType.EducationCreate:
-                educationController.CreateAsync();
+               await educationController.CreateEducationAsync();
                 break;
             case (int)OperationType.EducationDelete:
-                educationController.DeleteAsync();
+                await educationController.DeleteEducationAsync();
                 break;
             case (int)OperationType.EducationUpdate:
-                educationController.UpdateAsync();
+                await educationController.UpdateEducationAsync();
                 break;
             case (int)OperationType.GetEducationById:
-                educationController.GetByIdAsync();
+                await educationController.GetByIdAsync();
                 break;
             case (int)OperationType.GetAllEducations:
-                educationController.GetAllAsync();
+                await educationController.GetAllAsync();
                 break;
             case (int)OperationType.SearchEducations:
-                educationController.SearchAsync();
+                await educationController.SearchAsync();
                 break;
             case (int)OperationType.GetAllEducationsWhithGroups:
-                educationController.GetAllWithGroupsAsync();
+                await educationController.GetAllWithGroupsAsync();
                 break;
             case (int)OperationType.SortEducationsWhithCreateDate:
-                //--
+                await educationController.SortWithCreateDateAsync();
                 break;
             case (int)OperationType.GroupCreate:
-                groupController.CreateAsync();
+                await groupController.CreateAsync();
                 break;
             case (int)OperationType.GroupDelete:
-                groupController.DeleteAsync();
+                await groupController.DeleteAsync();
                 break;
             case (int)OperationType.GroupUpdate:
-                groupController.UpdateAsync();
+                await groupController.UpdateAsync();
                 break;
             case (int)OperationType.GetGroupById:
-                groupController.GetByIdAsync();
+                await groupController.GetByIdAsync();
                 break;
             case (int)OperationType.GetAllGroups:
-                groupController.GetAllAsync();
+                await groupController.GetAllAsync();
                 break;
             case (int)OperationType.SearchGroups:
-                groupController.SearchAsync();
+                await groupController.SearchAsync();
                 break;
             case (int)OperationType.GetAllGroupsWhithEducationId:
-                groupController.GetAllWithEducationIdAsync();
+                await groupController.GetAllWithEducationIdAsync();
                 break;
             case (int)OperationType.FilteGroupsWhithEducationName:
-                groupController.FilterByEducationNameAsync();
+                await groupController.FilterByEducationNameAsync();
                 break;
             case (int)OperationType.SortGroupsWhithCapacity:
-                groupController.SortWithCapacityAsync();
+                await groupController.SortWithCapacityAsync();
                 break;
 
 
 
             default:
-                Console.WriteLine ("This operation is not avialable, please choose correct operation again");
+                ConsoleColor.Red.WriteConsole("This operation is not avialable, please choose correct operation again");
                 goto Operation;
-
         }
-
     }
     else
     {
-        Console.WriteLine ("Operation format is wrong, please add operation again");
+        ConsoleColor.Red.WriteConsole("Operation format is wrong, please add operation again");
         goto Operation;
     }
 }

@@ -21,29 +21,13 @@ namespace Service.Services
             _context = new AppDbContext();
         }
 
-        public async Task CreateAsync(Education education)
-        {            
-            try
-                {
-                    if (education == null)
-                    {
-                        throw new ArgumentNullException();
-                    }                
-                await _context.Educations.AddAsync(education);
-                    await _context.SaveChangesAsync();
-                }
-                catch (ArgumentNullException ex)
-                {
-                    Console.WriteLine("Error: data can't be null");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }          
-
+        public async Task CreateEducationAsync(Education education)
+        {
+            await _context.Educations.AddAsync(education);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteEducationAsync(int id)
         {
             try
             {
@@ -67,81 +51,37 @@ namespace Service.Services
 
         public async Task<List<Education>> GetAllAsync()
         {
-            try
-            {
-                return await _context.Educations.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+
+            return await _context.Educations.ToListAsync();
+
         }
 
         public async Task<List<Education>> GetAllWithGroupsAsync()
         {
-            try
-            {
-                return await _context.Educations.Include(g => g.Groups).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);               
-                return new List<Education>();
-            }
+
+            return await _context.Educations.Include(g => g.Groups).ToListAsync();
+
         }
 
         public async Task<Education> GetByIdAsync(int id)
         {
-            try
-            {
-                return await _context.Educations.FirstOrDefaultAsync(m => m.Id == id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+            return await _context.Educations.FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<List<Education>> SearchAsync(string txt)
         {
-            try
-            {
-                return await _context.Educations.Where(e => e.Name.Contains(txt)).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);                
-                return new List<Education>();
-            }
+            return await _context.Educations.Where(e => e.Name.Contains(txt)).ToListAsync();
         }
 
         public async Task<List<Education>> SortWhithCreateDateAsync(string sortType)
-        {            
-            try
-            {
-                return await _context.Educations.OrderBy(m => m.Date).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new List<Education>();
-            }
-        }        
-
-        public async Task UpdateAsync(Education education)
         {
-            try
-            {
-                _context.Educations.Update(education);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+            return await _context.Educations.OrderBy(m => m.Date).ToListAsync();
+        }
 
-            }
+        public async Task UpdateEducationAsync(Education education)
+        {
+            _context.Educations.Update(education);
+            await _context.SaveChangesAsync();
         }
     }
 }

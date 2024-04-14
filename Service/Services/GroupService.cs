@@ -23,30 +23,18 @@ namespace Service.Services
 
         public async Task CreateAsync(Group group)
         {
-            try
+            if (group == null)
             {
-                if (group == null)
-                {
-                    throw new ArgumentNullException();
-                }
-                await _context.Groups.AddAsync(group);
-                await _context.SaveChangesAsync();
+                throw new ArgumentNullException();
             }
-            catch (ArgumentNullException ex)
-            {
-                Console.WriteLine("Error: data can't be null");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
+            await _context.Groups.AddAsync(group);
+            await _context.SaveChangesAsync();
         }
+          
 
         public async Task DeleteAsync(int id)
         {
-            try
-            {
+           
                 var data = await _context.FindAsync<Group>(id);
                 if (data != null)
                 {
@@ -58,11 +46,7 @@ namespace Service.Services
                 {
                     Console.WriteLine("Id not found");
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            
         }
 
         public async Task<List<Group>> FilterByEducationNameAsync()
@@ -72,82 +56,36 @@ namespace Service.Services
 
         public async Task<List<Group>> GetAllAsync()
         {
-            try
-            {
-                return await _context.Groups.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+           
+            return await _context.Groups.ToListAsync();     
+         
         }
 
         public async Task<List<Group>> GetAllWithEducationIdAsync(int EducationId)
-        {
-            try
-            {
-                return await _context.Groups.Include(m => m.EducationId).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new List<Group>();
-            }
+        {           
+                return await _context.Groups.Include(m => m.EducationId).ToListAsync();            
         }
 
         public async Task<Group> GetByIdAsync(int id)
         {
-            try
-            {
-                return await _context.Groups.FirstOrDefaultAsync(m => m.Id == id);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return null;
-            }
+                return await _context.Groups.FirstOrDefaultAsync(m => m.Id == id);            
         }
 
         public async Task<List<Group>> SearchAsync(string txt)
-        {
-            try
-            {
-                return await _context.Groups.Where(e => e.Name.Contains(txt)).ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                return new List<Group>();
-            }
+        {           
+                return await _context.Groups.Where(e => e.Name.Contains(txt)).ToListAsync();            
         }
 
         public async Task<List<Group>> SortWithCapacityAsync(string sort)
-        {
-            try
-            {
-                var groups = await _context.Groups.OrderBy(g => g.Capacity).ToListAsync();
-                return groups;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine( ex.Message);
-                return new List<Group>();
-            }
+        {            
+                return await _context.Groups.OrderBy(g => g.Capacity).ToListAsync();          
         }
 
         public async Task UpdateAsync(Group group)
-        {
-            try
-            {
+        {           
                 _context.Groups.Update(group);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-
-            }
+                await _context.SaveChangesAsync();            
         }
     }
+
 }
