@@ -31,68 +31,66 @@ namespace EF_CourseApp.Controllers
             string color = string.Empty;
 
             ConsoleColor.Cyan.WriteConsole("Add education name:");
-            Name: name = Console.ReadLine();
-                        
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    ConsoleColor.Red.WriteConsole("Name can't be empty. Please try again:");
-                    name = Console.ReadLine();
-                    goto Name;
-                }
+        Name: name = Console.ReadLine();
 
-                var result = await _educationService.GetAllAsync();
-
-                bool nameExists = result.Any(item => item.Name.ToLower() == name.ToLower().Trim());
-                if (nameExists)
-                {
-                    ConsoleColor.Red.WriteConsole("This name already exists. Please try again:");                    
-                    goto Name;
-                 }
-
-                if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
-                {
-                    ConsoleColor.Red.WriteConsole("Format is wrong. Please try again:");
-                    name = Console.ReadLine();
-                    goto Name;
-                 }
-
-                if (name.Length < 3)
-                {
-                    ConsoleColor.Red.WriteConsole("Name of education can't be less than 3 letters. Please try again:");
-                    name = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                ConsoleColor.Red.WriteConsole("Name can't be empty. Please try again:");
+                name = Console.ReadLine();
                 goto Name;
-                 }
+            }
+            if (name.Length < 3)
+            {
+                ConsoleColor.Red.WriteConsole("Name can't be shorter than 3 characters");
+                goto Name;
+            }
 
+            var result = await _educationService.GetAllAsync();
+
+            bool nameExists = result.Any(item => item.Name.ToLower() == name.ToLower().Trim());
+            if (nameExists)
+            {
+                ConsoleColor.Red.WriteConsole("This name already exists. Please try again:");
+                goto Name;
+            }
+
+            if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
+            {
+                ConsoleColor.Red.WriteConsole("Incorrect format. Please try again:");
+
+                goto Name;
+            }
 
             ConsoleColor.Cyan.WriteConsole("Add education color:");
-            Color:string colore = Console.ReadLine()?.Trim().ToLower();
-         
-                if (string.IsNullOrWhiteSpace(colore))
-                {
-                ConsoleColor.Red.WriteConsole("Color can't be empty. Please try again:");
-                    color = Console.ReadLine();
-                    goto Color;
-                }
 
-                if (!Regex.IsMatch(colore, @"^[\p{L}\p{M}' \.\-]+$"))
-                {
-                    ConsoleColor.Red.WriteConsole("Format is wrong. Please try again:");
-                    goto Color;
-                } 
+        Color: color = Console.ReadLine()?.Trim().ToLower();
+
+            if (string.IsNullOrEmpty(color))
+            {
+                ConsoleColor.Red.WriteConsole("Color can't be empty. Please try again:");
+                color = Console.ReadLine();
+                goto Color;
+            }
+
+            if (!Regex.IsMatch(color, @"^[\p{L}\p{M}' \.\-]+$"))
+            {
+                ConsoleColor.Red.WriteConsole("Incorrect format. Please try again:");
+                goto Color;
+            }
+
             try
             {
                 DateTime time = DateTime.Now;
 
                 await _educationService.CreateEducationAsync(new Education { Name = name.Trim().ToLower(), Color = color.Trim().ToLower(), Date = time });
 
-                Console.WriteLine("Education successfully added.");
+                ConsoleColor.Green.WriteConsole("Education successfully added.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
         }
-
         public async Task UpdateEducationAsync()
         {
             bool isInputValid = false;
@@ -103,7 +101,7 @@ namespace EF_CourseApp.Controllers
                 {
                     List<Education> educations = await _educationService.GetAllAsync();
 
-                    Console.WriteLine("List of Educations:");
+                    Console.WriteLine("Exist Educations:");
                     foreach (Education education in educations)
                     {
                         Console.WriteLine($"EducationId: {education.Id}, Name: {education.Name}");
@@ -115,24 +113,24 @@ namespace EF_CourseApp.Controllers
 
                     if (string.IsNullOrWhiteSpace(idStr))
                     {
-                        Console.WriteLine("ID can't be empty. Please write again.");
+                        ConsoleColor.Red.WriteConsole("ID can't be empty ,please write again.");
                         goto uId;
                     }
 
                     if (!int.TryParse(idStr, out int id))
                     {
-                        Console.WriteLine("Format is wrong. Please write correctly.");
+                        ConsoleColor.Red.WriteConsole("Format is wrong, please write correctly.");
                         goto uId;
                     }
 
                     var existingEducation = await _educationService.GetByIdAsync(id);
                     if (existingEducation == null)
                     {
-                        Console.WriteLine("Education not found.");
+                        ConsoleColor.Red.WriteConsole("Education not found.");
                         goto uId;
                     }
 
-                    Console.WriteLine("Please write new education name (leave empty to keep the old value):");
+                    ConsoleColor.Cyan.WriteConsole("Please write new education name:");
                     string name = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(name))
                     {
@@ -140,11 +138,11 @@ namespace EF_CourseApp.Controllers
                     }
                     else if (!Regex.IsMatch(name, @"^[\p{L}\p{M}' \.\-]+$"))
                     {
-                        Console.WriteLine("Not correct input. Please try again.");
+                        ConsoleColor.Red.WriteConsole("Input isn't correct, please try again.");
                         continue;
                     }
 
-                    Console.WriteLine("Please write new education color (leave empty to keep the old value):");
+                    ConsoleColor.Cyan.WriteConsole("Please write new education color:");
                     string color = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(color))
                     {
@@ -152,7 +150,7 @@ namespace EF_CourseApp.Controllers
                     }
                     else if (!Regex.IsMatch(color, @"^[\p{L}\p{M}' \.\-]+$"))
                     {
-                        Console.WriteLine("Not correct input. Please try again.");
+                        ConsoleColor.Red.WriteConsole("Input isn't correct, please try again.");
                         continue;
                     }
 
@@ -161,7 +159,7 @@ namespace EF_CourseApp.Controllers
 
                     DateTime time = DateTime.Now;
                     await _educationService.UpdateEducationAsync(existingEducation);
-                    Console.WriteLine("Education successfully updated.");
+                    ConsoleColor.Green.WriteConsole("Education successfully updated.");
                     isInputValid = true;
                 }
                 catch (Exception ex)
@@ -173,8 +171,7 @@ namespace EF_CourseApp.Controllers
 
         public async Task DeleteEducationAsync()
         {
-            try
-            {
+            
                 
                 List<Education> educations = await _educationService.GetAllAsync();
 
@@ -185,14 +182,14 @@ namespace EF_CourseApp.Controllers
                     Console.WriteLine($"EducationId: {education.Id}, Name: {education.Name}");
                 }
 
-                Console.WriteLine("Please write the Education id: ");
+            ConsoleColor.Cyan.WriteConsole("Please write the Education id: ");
             Id: string idStr = Console.ReadLine();
                 int id;
                 bool isCorrectIdFormat = int.TryParse(idStr, out id);
 
                 if (string.IsNullOrEmpty(idStr))
                 {
-                    Console.WriteLine("id can't be empty. Please try again.");
+                ConsoleColor.Red.WriteConsole("Input can't be empty, please try again.");
                     goto Id;
                 }
 
@@ -210,44 +207,43 @@ namespace EF_CourseApp.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("Input format is wrong. Please enter correct information");
+                ConsoleColor.Red.WriteConsole("Format is wrong, please enter correct format");
                     goto Id;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+           
         }
 
         public async Task GetAllAsync()
         {
             var datas = await _educationService.GetAllAsync();
-            if (datas != null || !datas.Any())
+            if (datas == null || !datas.Any())
             {
-                await Console.Out.WriteLineAsync("Data not found");
+                ConsoleColor.Red.WriteConsole("Data not found");
             }
-            foreach (var item in datas)
+            else
             {
-                string data = $"Education Id: {item.Id}, Education Name: {item.Name}, Education Color: {item.Color}, Created day: {item.Date}";
-                await Console.Out.WriteLineAsync(data);
+                foreach (var item in datas)
+                {
+                    string data = $"Education Id: {item.Id}, Education Name: {item.Name}, Education Color: {item.Color}, Created day: {item.Date}";
+                    Console.WriteLine(data);
+                }
             }
         }
 
         public async Task GetByIdAsync()
         {
-            Console.WriteLine("Enter the Education ID: ");
+            ConsoleColor.Cyan.WriteConsole("Enter the Education ID: ");
         gId: string idStr = Console.ReadLine();
 
             if (string.IsNullOrEmpty(idStr))
             {
-                Console.WriteLine("ID can't be empty. Please try again.");
+                ConsoleColor.Red.WriteConsole("Input can't be empty, please try again.");
                 goto gId;
             }
 
             if (!int.TryParse(idStr, out int id))
             {
-                Console.WriteLine("Format is wrong. Please add correct format");
+                ConsoleColor.Red.WriteConsole("Format is wrong, Please add correct format");
                 goto gId;
             }
 
@@ -257,7 +253,7 @@ namespace EF_CourseApp.Controllers
 
                 if (data == null)
                 {
-                    Console.WriteLine("Education not found.");
+                    ConsoleColor.Red.WriteConsole("Education not found.");
                     return;
                 }
 
@@ -269,24 +265,26 @@ namespace EF_CourseApp.Controllers
                 Console.WriteLine(ex.Message);
             }
         }
-        
+
         public async Task SearchAsync()
         {
-            Console.WriteLine("Please enter the education name:");
+            ConsoleColor.Cyan.WriteConsole("Please enter the education name:");
 
-            while (true)
+            string textStr;
+            do
             {
-                string textStr = Console.ReadLine();
+                textStr = Console.ReadLine();
 
-                Text: if (string.IsNullOrWhiteSpace(textStr))
+                if (string.IsNullOrWhiteSpace(textStr))
                 {
-                    Console.WriteLine("Input can't be empty. Please try again.");
-                    goto Text;
+                    ConsoleColor.Red.WriteConsole("Input can't be empty. Please try again.");
+                    continue;
                 }
+
                 if (!Regex.IsMatch(textStr, @"^[\p{L}\p{M}' \.\-]+$"))
                 {
                     ConsoleColor.Red.WriteConsole("Format is wrong");
-                    goto Text;
+                    continue;
                 }
 
                 try
@@ -295,8 +293,8 @@ namespace EF_CourseApp.Controllers
 
                     if (result.Count == 0)
                     {
-                        Console.WriteLine("Data not found. Please try again.");
-                        goto Text;
+                        ConsoleColor.Red.WriteConsole("Data not found, please try again.");
+                        continue;
                     }
 
                     foreach (var item in result)
@@ -304,14 +302,14 @@ namespace EF_CourseApp.Controllers
                         string data = $"Education name: {item.Name}, Education color: {item.Color}, CreateDate: {item.Date}";
                         Console.WriteLine(data);
                     }
-
-                    break;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
-            }
+
+                break;
+            } while (true);
         }
 
         public async Task GetAllWithGroupsAsync()
@@ -319,15 +317,14 @@ namespace EF_CourseApp.Controllers
             var datas = await _educationService.GetAllAsync();
             if (datas == null || !datas.Any())
             {
-                await Console.Out.WriteLineAsync("Data not found");
+                ConsoleColor.Red.WriteConsole("Data not found");
             }
             else
             {
                 foreach (var item in datas)
                 {
-                    string groupNames = item.Groups != null? string.Join(", ", item.Groups) : string.Empty;
-                    string data = $"Education Name: {item.Name}, Education Color: {item.Color}, Group name: {groupNames}";
-                    await Console.Out.WriteLineAsync(data);
+                    string groupNames = (item.Groups != null && item.Groups.Any()) ? string.Join(", ", item.Groups.Select(g => g.Name)) : "No groups";
+                    Console.WriteLine($"Education Name: {item.Name}, Education Color: {item.Color}, Group Name: {item.Groups}");
                 }
             }
         }
@@ -339,12 +336,12 @@ namespace EF_CourseApp.Controllers
                 string sortType;
                 do
                 {
-                    Console.WriteLine("Choose sort type: Asc or Desc");
+                    ConsoleColor.Cyan.WriteConsole("Choose sort type: Asc or Desc");
                     sortType = Console.ReadLine();
 
                     if (sortType.ToLower() != "asc" && sortType.ToLower() != "desc")
                     {
-                        Console.WriteLine("Invalid sort type. Please choose one type 'Asc' or 'Desc'.");
+                        ConsoleColor.Cyan.WriteConsole("Please choose sorting type 'Asc' or 'Desc'.");
                     }
                 }
                 while (sortType.ToLower() != "asc" && sortType.ToLower() != "desc");

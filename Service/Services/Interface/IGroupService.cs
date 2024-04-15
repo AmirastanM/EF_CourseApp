@@ -15,8 +15,8 @@ namespace Service.Services.Interface
         Task UpdateAsync(Group group);
         Task DeleteAsync(int id);
         Task<List<Group>> SearchAsync(string txt);
-        Task<List<Group>> GetAllWithEducationIdAsync(int EducationId);
-        Task<List<Group>> FilterByEducationNameAsync();
+        Task<List<Group>> GetAllWithEducationIdAsync(int id);
+        Task<List<Group>> FilterByEducationNameAsync(string name);
         Task<List<Group>> SortWithCapacityAsync(string sort);
 
     }

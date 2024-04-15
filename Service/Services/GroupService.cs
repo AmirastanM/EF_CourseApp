@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Service.Services.Interface;
 using Repository;
 using Domain.Common;
+using System.Xml.Linq;
 
 namespace Service.Services
 {
@@ -49,11 +50,11 @@ namespace Service.Services
             
         }
 
-        public async Task<List<Group>> FilterByEducationNameAsync()
+        public async Task<List<Group>> FilterByEducationNameAsync(string name)
         {
-            return await _context.Groups.Include(m => m.Education.Name).ToListAsync();
+            return await _context.Groups.Where(group => group.Education.Name == name).ToListAsync();
         }
-
+              
         public async Task<List<Group>> GetAllAsync()
         {
            
@@ -61,9 +62,11 @@ namespace Service.Services
          
         }
 
-        public async Task<List<Group>> GetAllWithEducationIdAsync(int EducationId)
-        {           
-                return await _context.Groups.Include(m => m.EducationId).ToListAsync();            
+        public async Task<List<Group>> GetAllWithEducationIdAsync(int id)
+        {
+           
+                return await _context.Groups.Include(group => group.Education).Where(group => group.EducationId == id).ToListAsync();
+            
         }
 
         public async Task<Group> GetByIdAsync(int id)
@@ -72,15 +75,29 @@ namespace Service.Services
         }
 
         public async Task<List<Group>> SearchAsync(string txt)
-        {           
-                return await _context.Groups.Where(e => e.Name.Contains(txt)).ToListAsync();            
+        {
+            return await _context.Groups.Where(e => e.Name.Contains(txt)).ToListAsync();
         }
 
         public async Task<List<Group>> SortWithCapacityAsync(string sort)
-        {            
-                return await _context.Groups.OrderBy(g => g.Capacity).ToListAsync();          
-        }
+        {
+            IQueryable<Group> query = _context.Groups;
 
+            if (sort == "asc")
+            {
+                query = query.OrderBy(g => g.Capacity);
+            }
+            else if (sort == "desc")
+            {
+                query = query.OrderByDescending(g => g.Capacity);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid sort type. Please choose 'asc' or 'desc'.");
+            }
+
+            return await query.ToListAsync();
+        }
         public async Task UpdateAsync(Group group)
         {           
                 _context.Groups.Update(group);

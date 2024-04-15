@@ -9,6 +9,7 @@ using Service.Services.Interface;
 using Repository;
 using Domain.Common;
 using static System.Net.Mime.MediaTypeNames;
+using Service.Extensions;
 
 namespace Service.Services
 {
@@ -36,11 +37,11 @@ namespace Service.Services
                 {
                     _context.Remove(data);
                     await _context.SaveChangesAsync();
-                    Console.WriteLine("Successfully deleted");
+                    ConsoleColor.Green.WriteConsole("Successfully deleted");
                 }
                 else
                 {
-                    Console.WriteLine("Id not found");
+                    ConsoleColor.Red.WriteConsole("Id not found");
                 }
             }
             catch (Exception ex)
@@ -56,10 +57,10 @@ namespace Service.Services
 
         }
 
-        public async Task<List<Education>> GetAllWithGroupsAsync()
+        public async Task<List<Education>> GetAllWithGroupsAsync(string name)
         {
 
-            return await _context.Educations.Include(g => g.Groups).ToListAsync();
+            return await _context.Educations.Include(g => g.Groups).Where(m => m.Name == name).ToListAsync();
 
         }
 
